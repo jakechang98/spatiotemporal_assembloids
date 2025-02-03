@@ -35,10 +35,16 @@ main <- function(base_directory, output_directory) {
 }
 
 
-main(base_directory = "data/original_celesta_data/coculture/osimertinib/assembloids_02", 
-     output_directory = "data/coculture/osimertinib/assembloids_02")
+conditions <- c("coculture")
+assembloids <- c("assembloids_01", "assembloids_02", "assembloids_03")
 
-main(base_directory = "data/original_celesta_data/coculture/control/assembloids_02", 
-     output_directory = "data/coculture/control/assembloids_02")
+for(c in conditions) {
+  for(a in assembloids) {
+    main(base_directory = paste0("data/original_celesta_data/", c,"/osimertinib/", a), 
+         output_directory = paste0("data/", c, "/osimertinib/", a))
+    main(base_directory = paste0("data/original_celesta_data/", c,"/control/", a), 
+         output_directory = paste0("data/", c, "/control/", a))
+  }
+}
 
 # ==============================================================================
