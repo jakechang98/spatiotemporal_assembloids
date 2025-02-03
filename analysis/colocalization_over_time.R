@@ -1,3 +1,6 @@
+# NOTE: I want to expand this script to combine all samples.
+# Should also test this over multiple sets of colocalization hyperparameters...
+
 devtools::load_all(path = "/Users/jacobchang/Lab/metadisco")
 library(dplyr)
 library(ggplot2)
@@ -34,11 +37,11 @@ for(i in seq_along(time_points)){
   spomic <- createSpomic(p = paste0(base_path_control, "/Assembloid2_ctl_", time_points[i], ".csv"))
   spomic <- setSpomicHypers(
     spomic_obj = spomic, 
-    tile_size = 250, 
-    window_size = 10, 
+    tile_size = NULL, 
+    window_size = NULL, 
     k_neigh = 15, 
     bandwidth = 100, 
-    n_bootstrap = 100, 
+    n_bootstrap = NULL, 
     weight_scheme = "linear", 
     precompute_neighbors = TRUE
   )
