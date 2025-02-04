@@ -121,6 +121,8 @@ a_b <- unique(c(osi_clqs$A_B, control_clqs$A_B))
 osi_df <- osi_clqs |> dplyr::mutate(treatment = "osi")
 control_df <- control_clqs |> dplyr::mutate(treatment = "control")
 total_df <- rbind(osi_df, control_df)
+total_df <- total_df |> mutate(colocalization_status = ifelse(between(colocalization_stat, lower_bound, upper_bound), "not_significant", 
+                                                         ifelse(colocalization_stat < lower_bound, "antilocalized", "colocalized")))
 
 pdf(file = file.path("output", 
                      "colocalization_vs_time", 
@@ -131,8 +133,9 @@ pdf(file = file.path("output",
 
 for(i in seq_along(a_b)) {
   p <- ggplot(total_df|> filter(A_B == a_b[i]), 
-              aes(x = t, y = colocalization_stat, color = treatment, group = treatment)) +
-    geom_point(aes(color = treatment), size = 1) +
+              aes(x = t, y = colocalization_stat, color = treatment, group = treatment, shape = colocalization_status)) +
+    geom_point(aes(color = treatment, 
+                   shape = colocalization_status), size = 2) +
     geom_line() +
     geom_ribbon(aes(ymin = lower_bound, ymax = upper_bound, fill = treatment), color = NA, alpha = 0.1) + # Shaded region for bounds
     geom_vline(xintercept =  72, linetype = "dotted", color = "darkgray") + 
@@ -140,9 +143,11 @@ for(i in seq_along(a_b)) {
          x = "Time",
          y = "Colocalization Statistic",
          color = "Treatment Group", 
-         fill = "Random Colocalization Band") +
+         fill = "Random Colocalization Band", 
+         shape = "Colocalization Status") +
     theme_pubr() + 
-    theme_publication_text()
+    theme_publication_text() + 
+    scale_shape_manual(values = c("not_significant" = 1, "antilocalized" = 16, "colocalized" = 16))
 print(p)
 }
 dev.off()
@@ -150,3 +155,4 @@ dev.off()
 write.csv(total_df, "output/colocalization_vs_time/assembloids_02/colocalization_vs_time.csv", row.names = FALSE)
 
 # ==============================================================================
+
